@@ -125,7 +125,7 @@ export default async function handler(req, res) {
 
   const key = (process.env.GEMINI_API_KEY || '').trim();
   if (!key) return res.status(503).json({ error: 'not_configured', message: 'Live AI is not set up on this deployment yet.' });
-  if (!/^AIza[0-9A-Za-z_-]{30,}$/.test(key)) {
+  if (!/^[\x21-\x7e]{30,}$/.test(key)) {
     // Describe what's wrong with the key without revealing any of it.
     const issues = [`${key.length} characters`];
     if (!key.startsWith('AIza')) issues.push('does not start with AIza');
