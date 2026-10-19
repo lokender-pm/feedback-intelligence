@@ -1,0 +1,13 @@
+{
+  "name": "feedback-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AI feedback triage with verified quotes, transparent prioritisation and audience briefings.",
+  "scripts": {
+    "dev": "node dev-server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<title>Feedback Intelligence</title>
+<meta name="description" content="Helps a product team turn customer feedback into a clear picture of recurring issues, and decide what to look into next.">
+<meta property="og:title" content="Feedback Intelligence">
+<meta property="og:description" content="Helps a product team turn customer feedback into a clear picture of recurring issues, and decide what to look into next.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #f6f7f9;
+  --ink: #1b1f24;
+  --muted: #636c78;
+  --line: #e2e5ea;
+  --accent: #2457c5;
+  --accent-soft: #eaf0fb;
+  --red: #b42318;
+  --red-soft: #fdf1f0;
+  --green: #067647;
+  --amber: #a15c07;
+  --font: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.55 var(--font);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 56px;
+}
+.wrap { max-width: 920px; margin: 0 auto; }
+h1, h2, h3 { margin: 0; line-height: 1.25; text-wrap: balance; }
+h1 { font-size: 22px; font-weight: 600; }
+h2 { font-size: 22px; font-weight: 600; }
+h3 { font-size: 15px; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--accent); }
+button, input, textarea, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.mono { font-family: var(--mono); font-size: 12px; }
+
+/* Header */
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 24px; padding: 28px 0 20px; border-bottom: 1px solid var(--line); }
+.top .sub { max-width: 60ch; }
+.top .sub { color: var(--muted); margin-top: 2px; }
+
+/* About: problem, users, how it helps */
+.why { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.why h3 { font-size: 13px; color: var(--muted); font-weight: 500; margin-bottom: 4px; }
+.why p { font-size: 14px; }
+@media (max-width: 720px) { .why { grid-template-columns: 1fr; gap: 14px; } }
+
+.loop { grid-column: 1 / -1; font-size: 13.5px; color: var(--muted); }
+.loop span { color: var(--muted); }
+.loop b { color: var(--accent); font-weight: 600; }
+
+/* Problem detail: discovery notes and the four lenses */
+.disc { display: grid; gap: 10px; font-size: 14px; }
+.stmt { font-weight: 500; font-size: 15px; }
+.unknowns { margin: 2px 0 0; padding-left: 18px; display: grid; gap: 2px; }
+.disc .kv span { color: var(--muted); }
+.lenses { margin: 0; display: grid; gap: 4px; border-top: 1px solid var(--line); padding-top: 10px; }
+.lenses div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 8px; }
+.lenses dt { color: var(--muted); }
+.lenses dd { margin: 0; }
+.imp-High { color: var(--red); font-weight: 500; } .imp-Medium { color: var(--amber); } .imp-Low { color: var(--muted); }
+td.call { font-weight: 500; white-space: nowrap; }
+td select { font-size: 13px; padding: 3px 4px; }
+
+/* Product notes */
+.notes { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 20px; }
+.notes > h3 { margin-bottom: 12px; }
+.notes-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 32px; }
+.notes h4 { margin: 0 0 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
+.notes ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+@media (max-width: 720px) { .notes-grid { grid-template-columns: 1fr; } }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 5px 12px; font-size: 14px; cursor: pointer; }
+.btn:hover { border-color: #c5cad2; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+.link { border: 0; background: none; padding: 0; color: var(--accent); cursor: pointer; font-size: 13px; }
+.link:hover { text-decoration: underline; }
+
+/* Data source bar */
+.source { margin-top: 20px; background: var(--panel); border-radius: 8px; padding: 14px 16px; display: grid; gap: 12px; }
+.source.over { outline: 2px dashed var(--accent); }
+.source-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; }
+.source-row .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.note { font-size: 13px; color: var(--muted); }
+textarea:disabled, .btn:disabled { opacity: .6; cursor: not-allowed; }
+textarea { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: #fff; resize: vertical; }
+#feedback { min-height: 160px; font-family: var(--mono); font-size: 12px; white-space: pre; overflow-x: auto; tab-size: 16; }
+.input-error { color: var(--red); font-size: 14px; }
+.checks { font-size: 14px; display: grid; gap: 10px; }
+.mapping { display: flex; flex-wrap: wrap; gap: 10px 16px; }
+.mapping label { display: grid; gap: 2px; font-size: 12.5px; color: var(--muted); }
+select { border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; background: #fff; }
+
+/* Views */
+.views { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-top: 24px; border-bottom: 1px solid var(--line); }
+.views span { font-size: 13px; color: var(--muted); }
+.views button { border: 0; background: none; padding: 8px 2px; font-size: 14px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.views button[aria-pressed="true"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
+
+/* Readout */
+#results { display: grid; gap: 36px; margin-top: 24px; }
+.readout { display: grid; gap: 8px; }
+.eyebrow { font-size: 13px; color: var(--muted); }
+.facts { font-size: 14px; color: var(--muted); }
+.facts b { color: var(--ink); font-weight: 600; }
+section > h3 { margin-bottom: 10px; }
+.heard { margin: 0; padding-left: 20px; display: grid; gap: 10px; }
+.heard li p { color: var(--muted); font-size: 14px; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12.5px; padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+th.n { text-align: left; }
+tr.detail > td { background: var(--panel); padding: 12px 14px 16px; }
+.risk { color: var(--red); font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+.conf-High { color: var(--green); } .conf-Medium { color: var(--amber); } .conf-Low { color: var(--muted); }
+@media (max-width: 620px) { .hide-sm { display: none; } }
+
+/* Next steps */
+.next { margin: 0; padding-left: 20px; display: grid; gap: 16px; }
+.next li { padding-left: 2px; }
+.next p { font-size: 14px; }
+.next .why { color: var(--muted); }
+.next .kv { color: var(--ink); }
+.next .kv span { color: var(--muted); }
+
+/* Quotes */
+.quotes { display: grid; gap: 8px; margin-top: 8px; }
+.q { margin: 0; padding-left: 12px; border-left: 2px solid var(--line); font-size: 14px; }
+.q cite { display: block; font-style: normal; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.q .warn { color: var(--amber); }
+.math { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+/* Risk box */
+.riskbox { background: var(--red-soft); border-radius: 8px; padding: 14px 16px; display: grid; gap: 8px; }
+.riskbox ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; }
+
+/* Appendix */
+.appendix { border-top: 1px solid var(--line); padding-top: 20px; display: grid; gap: 16px; }
+details > summary { cursor: pointer; font-weight: 500; }
+.method { font-size: 14px; color: var(--muted); }
+.method ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.export { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.banner { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; font-size: 14px; }
+.banner.warn { background: var(--red-soft); }
+.foot { margin-top: 40px; font-size: 13px; color: var(--muted); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 6px; font-size: 14px; }
+#copyFallback { min-height: 140px; font-family: var(--mono); font-size: 12px; }
+@media print { #results { gap: 24px; } tr, .q, li { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Feedback Intelligence</h1>
+      <p class="sub">Helps a product team turn customer feedback into a clear picture of recurring issues, and decide what to look into next.</p>
+    </div>
+  </header>
+
+  <section class="why" aria-label="About this tool">
+    <div>
+      <h3>The problem</h3>
+      <p>Feedback arrives from support tickets, surveys, app reviews and sales calls. Nobody has time to read it all, so priorities end up set by whoever complained loudest or most recently.</p>
+    </div>
+    <div>
+      <h3>Who it's for</h3>
+      <p>Product managers, and the people they share findings with: marketing, support, engineering and leadership.</p>
+    </div>
+    <div>
+      <h3>How it helps</h3>
+      <p>Groups comments into problems, ranks them, shows the customer quotes behind each one, and suggests what to check next. Each team gets a readout in its own terms.</p>
+    </div>
+    <p class="loop"><span>Where it fits:</span> Launch → Customer feedback → <b>Discovery: find and size the problems</b> → Prioritise → Roadmap → Sprint</p>
+  </section>
+
+  <section class="source" id="source" aria-label="Data">
+    <div class="source-row">
+      <div>
+        <b id="srcName">Sample dataset</b>
+        <span class="muted small" id="srcMeta"></span>
+      </div>
+      <div class="row">
+        <label class="btn" for="fileInput">Upload CSV</label>
+        <input type="file" id="fileInput" accept=".csv,.tsv,.txt,text/csv" hidden>
+        <button class="btn" type="button" id="togglePaste">Paste</button>
+        <button class="link" type="button" id="loadSample" hidden>Back to sample</button>
+      </div>
+    </div>
+    <div id="pasteBox" hidden>
+      <textarea id="feedback" spellcheck="false" aria-label="Paste feedback" placeholder="Paste spreadsheet rows (with a header row), or one comment per line. Start a line with [support] or [survey] to tag the source."></textarea>
+    </div>
+    <p class="input-error" id="inputError" role="alert" hidden></p>
+    <div id="preview"></div>
+    <div id="liveControls">
+      <label class="note" for="instructions">Anything to focus on? (optional)</label>
+      <textarea id="instructions" maxlength="500" rows="2" placeholder="e.g. We're planning Q4. Focus on what blocks enterprise deals."></textarea>
+      <div style="margin-top:8px"><button class="btn primary" type="button" id="analyze">Analyze</button></div>
+    </div>
+    <p class="note" id="modeNote"></p>
+  </section>
+
+  <nav class="views" aria-label="Readout for">
+    <span>Readout for</span>
+    <div id="audiences" role="group" style="display:flex;flex-wrap:wrap;gap:0 18px"></div>
+  </nav>
+
+  <main id="results" aria-live="polite"></main>
+
+  <section class="notes" aria-labelledby="notesH">
+    <h3 id="notesH">Product notes</h3>
+    <div class="notes-grid">
+      <div>
+        <h4>Decisions behind it</h4>
+        <ul>
+          <li>AI reads and tags each comment. Counting and ranking use simple rules, so the numbers come out the same every time and anyone can check them.</li>
+          <li>The deal and churn risk list shows in every team's view, so asking for "just the positives" can't hide a problem.</li>
+          <li>Every point links back to real customer quotes. People trust a readout more when they can read the source.</li>
+          <li>AI suggests impact; the PM sets effort. Prioritisation stays a human call.</li>
+          <li>No logins or setup: upload a CSV export and get a readout. For a first version, easy to try beats feature-rich.</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Left out of this version, on purpose</h4>
+        <ul>
+          <li>Trends over time (needs saved history)</li>
+          <li>Direct connections to Zendesk, app stores or survey tools</li>
+          <li>Assigning owners and tracking follow-up</li>
+        </ul>
+      </div>
+      <div>
+        <h4>How we'd know it works</h4>
+        <ul>
+          <li>Time from a feedback export to a readout the team uses: same day, instead of a monthly review</li>
+          <li>Share of roadmap items backed by customer feedback</li>
+          <li>Teams opening their readout each week</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Cost and limits</h4>
+        <ul>
+          <li>Runs on free hosting and a free AI tier, with no database or logins to maintain.</li>
+          <li>The AI's tags can be wrong. Checking accuracy against hand-labelled comments is the next step.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">Sample data is fictional.</p>
+</div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
