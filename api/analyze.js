@@ -163,7 +163,7 @@ export default async function handler(req, res) {
 
   const started = Date.now();
   const timeout = new AbortController();
-  const timer = setTimeout(() => timeout.abort(), 50_000); // stay inside Vercel's 60 s limit
+  const timer = setTimeout(() => timeout.abort(), 110_000); // stay inside the 120 s limit in vercel.json
   let response;
   try {
     response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent`, {
