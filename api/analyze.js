@@ -123,7 +123,7 @@ function clean(raw, validIds) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method_not_allowed', message: 'Use POST.' });
 
-  const key = process.env.GEMINI_API_KEY;
+  const key = (process.env.GEMINI_API_KEY || '').trim();
   if (!key) return res.status(503).json({ error: 'not_configured', message: 'Live AI is not set up on this deployment yet.' });
 
   const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
@@ -170,6 +170,7 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     clearTimeout(timer);
+    console.error('Gemini request failed:', err?.name, err?.message, err?.cause?.code || '');
     if (err?.name === 'AbortError') return res.status(504).json({ error: 'timeout', message: 'The analysis took too long. Try again with fewer items.' });
     return res.status(502).json({ error: 'upstream_unreachable', message: 'Could not reach the AI service. Try again in a moment.' });
   }
