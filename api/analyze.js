@@ -173,7 +173,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: 'You are a careful product insights analyst. You tag customer feedback faithfully and never invent quotes, counts or facts. Respond with JSON only.' }] },
         contents: [{ role: 'user', parts: [{ text: buildPrompt(safeItems, audience, instructions) }] }],
-        generationConfig: { responseMimeType: 'application/json', temperature: 0.2, maxOutputTokens: 32768 }
+                // Tagging feedback doesn't need deep reasoning; low thinking keeps responses fast.
+      generationConfig: { responseMimeType: 'application/json', temperature: 0.2, maxOutputTokens: 32768, thinkingConfig: { thinkingLevel: 'low' } }
       })
     });
   } catch (err) {
