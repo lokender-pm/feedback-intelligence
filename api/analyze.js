@@ -2,7 +2,7 @@
 // Runs on Vercel (free Hobby plan). Uses Google Gemini's free tier by default.
 // The API key lives only in the GEMINI_API_KEY environment variable, never in the page.
 
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 const RUNS_PER_HOUR = Number(process.env.RUNS_PER_HOUR || 5);
 const MAX_ITEMS = 200;
 const MAX_CHARS = 20000;
