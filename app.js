@@ -223,7 +223,7 @@
     $('#preview').innerHTML = b && !isSample() ? previewHtml(t, b) : '';
 
     $('#modeNote').textContent = CONFIG.liveEnabled
-      ? 'Emails and phone numbers are removed before analysis. Nothing is stored here, but the AI provider (Google Gemini, free tier) may retain what you send, so avoid confidential data.'
+      ? 'Use fictional or anonymised data only. Emails and phone numbers are removed, but names and company details are not, and Google\'s free AI tier may use what you send to improve its products. Nothing is stored on this site.'
       : isSample()
         ? 'This is a demo using sample data, analysed in advance. You can upload your own CSV to see how it gets checked. It stays on your computer.'
         : 'Your data was checked on your computer only. Analysis is switched off in this demo, so nothing was analysed or sent anywhere.';
@@ -451,7 +451,7 @@
       a.problems.length ? `<section><h3>Top problems</h3>
         <p class="small muted" style="margin:-4px 0 10px">Impact comes from the feedback. Effort is your call: pick one to see where each problem lands. Click a problem for the problem statement and what to find out next.</p>
         <div class="table-wrap"><table>
-          <thead><tr><th>#</th><th>Problem</th><th class="n hide-sm">Mentions</th><th>Impact</th><th>Effort</th><th>Call</th></tr></thead>
+          <thead><tr><th>#</th><th>Problem</th><th class="n hide-sm">Mentions</th><th>Impact</th><th>Effort</th><th>Suggested call</th></tr></thead>
           <tbody>${shown.map((p, i) => {
             const id = 'p' + i, e = state.effort[p.key] || '';
             return `<tr>
@@ -502,10 +502,10 @@
             <li>Each comment gets one theme, a sentiment, a severity from 0 to 3, and a flag if it points to a lost deal or a customer leaving. Counts are comments, not customers.</li>
             <li>Score: add up the severity of each mention, counting deal blockers ×1.5 and churn risks ×1.3. It's for sorting the list, not a revenue estimate.</li>
             <li>Confidence: High = 5+ mentions from 2+ channels. Medium = 3+ mentions or 2+ channels. Low = everything else.</li>
-            <li>Impact: High if the score is 10+ or any comment flags a deal or churn risk; Medium if 5+; Low otherwise. Call: high impact with small effort is a Quick win, medium effort Do next, large effort a Big bet. Lower impact is a Fill-in (small or medium effort) or Not now (large).</li>
+            <li>Impact: High if the score is 10+ or any comment flags a deal or churn risk; Medium if 5+; Low otherwise. These cut-offs suit files of a few hundred comments; much bigger files would need relative cut-offs. Suggested call: high impact with small effort is a Quick win, medium effort Do next, large effort a Big bet. Lower impact is a Fill-in (small or medium effort) or Not now (large).</li>
             <li>Quotes are checked word for word against the original (${a.verified} of ${a.spanCount} match). The tags are judgement calls and can be wrong.</li>
             <li>Picking a team changes the summary and next steps. The ranking and the risk list stay the same.</li>
-            <li>${state.mode === 'demo' ? 'The demo data was tagged in advance using AI. ' : 'Tagged by Google Gemini; counts and scores are worked out in the page. '}Accuracy check: on 30 separate test comments, the live AI matched reviewed reference labels on sentiment 26 of 30 and issue type 27 of 30, and every quote was found word for word. Main miss: it reads polite feature requests as positive. A small test that shows patterns, not a guaranteed accuracy rate.</li>
+            <li>${state.mode === 'demo' ? 'The demo data was tagged in advance using AI. ' : 'Tagged by Google Gemini; counts and scores are worked out in the page. '}Accuracy check on 30 separate test comments (labels drafted with AI, reviewed by one PM, one run): sentiment matched 26 of 30, issue type 27 of 30. Every cited quote exists in the source, which shows the quote is real, not that the tag is right. Main miss: polite feature requests read as positive. Run 3 times, issue type, severity and risk flags stayed the same for 27 of 30 comments, but theme names changed in most runs, so rankings can shift between runs. A small test that shows patterns, not a guaranteed accuracy rate.</li>
           </ul>
         </details>
         <div class="export"><button class="btn" type="button" data-action="copy">Copy problem statements</button><button class="btn" type="button" data-action="csv">Download CSV</button><span class="small muted">Problem statements paste straight into a PRD or backlog. The CSV has every comment with its tags.</span></div>
@@ -526,7 +526,7 @@
     picked.forEach((p, i) => {
       L.push(`${i + 1}. ${p.subtheme} (${p.theme})`);
       if (p.disc?.statement) L.push(`Problem: ${p.disc.statement}`);
-      L.push(`Impact: ${p.impact} · Effort: ${EFFORT[state.effort[p.key]] || 'not set'}${decision(p) ? ' · Call: ' + decision(p) : ''}`);
+      L.push(`Impact: ${p.impact} · Effort: ${EFFORT[state.effort[p.key]] || 'not set'}${decision(p) ? ' · Suggested call: ' + decision(p) : ''}`);
       L.push(`Evidence: ${plural(p.items.length, 'comment')} from ${p.channels.join(', ')}${p.risks.length ? ' · ' + p.risks.map(s => SIGNAL_LABEL[s]).join(', ') : ''}`);
       if (p.disc?.unknowns?.length) L.push(`Open questions: ${p.disc.unknowns.join(' ')}`);
       if (p.disc?.next) L.push(`Next step: ${p.disc.next}`);

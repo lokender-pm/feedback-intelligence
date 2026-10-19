@@ -184,13 +184,13 @@ details > summary { cursor: pointer; font-weight: 500; }
     </div>
     <div>
       <h3>Who it's for</h3>
-      <p>Product managers, and the people they share findings with: marketing, support, engineering and leadership.</p>
+      <p>Product managers. Marketing, support, engineering and leadership read the readouts it produces.</p>
     </div>
     <div>
       <h3>How it helps</h3>
-      <p>Groups comments into problems, ranks them, shows the customer quotes behind each one, and suggests what to check next. Each team gets a readout in its own terms.</p>
+      <p>Groups comments into problems, ranks them, shows the customer quotes behind each one, and suggests what to check next. Each team gets a readout in its own terms. Built for exports of up to 200 comments per run; tested on 72.</p>
     </div>
-    <p class="loop"><span>Where it fits:</span> Launch → Customer feedback → <b>Discovery: find and size the problems</b> → Prioritise → Roadmap → Sprint</p>
+    <p class="loop"><span>Where it fits:</span> Launch → Customer feedback → <b>Discovery: find and rank the problems</b> → Prioritise → Roadmap → Sprint</p>
   </section>
 
   <section class="source" id="source" aria-label="Data">
@@ -214,7 +214,7 @@ details > summary { cursor: pointer; font-weight: 500; }
     <div id="liveControls">
       <label class="note" for="instructions">Anything to focus on? (optional)</label>
       <textarea id="instructions" maxlength="500" rows="2" placeholder="e.g. We're planning Q4. Focus on what blocks enterprise deals."></textarea>
-      <div style="margin-top:8px"><button class="btn primary" type="button" id="analyze">Analyze</button></div>
+      <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center"><button class="btn primary" type="button" id="analyze">Analyze</button><span class="note">Up to 200 comments per run. Takes about a minute for 70 comments.</span></div>
     </div>
     <p class="note" id="modeNote"></p>
   </section>
@@ -232,11 +232,12 @@ details > summary { cursor: pointer; font-weight: 500; }
       <div>
         <h4>Decisions behind it</h4>
         <ul>
-          <li>AI reads and tags each comment. Counting and ranking use simple rules, so the numbers come out the same every time and anyone can check them.</li>
+          <li>AI reads and tags each comment. Counting and ranking use simple, visible rules, so once comments are tagged the scores can be checked by hand. The tags themselves can vary between runs (see Cost and limits).</li>
           <li>The deal and churn risk list shows in every team's view, so asking for "just the positives" can't hide a problem.</li>
           <li>Every point links back to real customer quotes. People trust a readout more when they can read the source.</li>
           <li>AI suggests impact; the PM sets effort. Prioritisation stays a human call.</li>
           <li>No logins or setup: upload a CSV export and get a readout. For a first version, easy to try beats feature-rich.</li>
+          <li>Why not paste the file into a chat tool? A chat answer is a one-off summary you can't check or repeat. Here every number traces back to tagged comments and real quotes, the scoring rules are visible, and the risk list can't be filtered out.</li>
         </ul>
       </div>
       <div>
@@ -251,7 +252,7 @@ details > summary { cursor: pointer; font-weight: 500; }
         <h4>How we'd know it works</h4>
         <ul>
           <li>Time from a feedback export to a readout the team uses: same day, instead of a monthly review</li>
-          <li>Share of roadmap items backed by customer feedback</li>
+          <li>How many top-ranked problems hold up when the team investigates them</li>
           <li>Teams opening their readout each week</li>
         </ul>
       </div>
@@ -259,7 +260,8 @@ details > summary { cursor: pointer; font-weight: 500; }
         <h4>Cost and limits</h4>
         <ul>
           <li>Runs on free hosting and a free AI tier, with no database or logins to maintain.</li>
-          <li>Tested on 30 separate comments against reviewed labels: sentiment matched 26/30, issue type 27/30, quotes 30/30. It reads polite feature requests as positive, and its theme names drift between runs. Next: a fixed theme list per product.</li>
+          <li>Accuracy, on 30 separate test comments: sentiment matched reference labels 26/30, issue type 27/30. Labels were drafted with AI and reviewed by one PM; one run. Not yet checked against labels: themes, severity, risk flags.</li>
+          <li>Consistency, same 30 comments run 3 times: issue type, severity and risk flag stayed the same for 27/30, sentiment for 22/30, but theme names matched only 6/30. Next: a fixed theme list per product.</li>
         </ul>
       </div>
     </div>
