@@ -127,9 +127,10 @@ export default async function handler(req, res) {
   if (!key) return res.status(503).json({ error: 'not_configured', message: 'Live AI is not set up on this deployment yet.' });
   if (!/^[\x21-\x7e]{30,}$/.test(key)) {
     // Describe what's wrong with the key without revealing any of it.
+    // Accepts both Gemini key formats ("AIza…" and the newer "AQ.…"); rejects spaces, line breaks and odd characters.
     const issues = [`${key.length} characters`];
-    if (!key.startsWith('AIza')) issues.push('does not start with AIza');
-    if (/[^\x21-\x7e]/.test(key)) issues.push('contains spaces or invalid characters');
+    if (key.length < 30) issues.push('too short');
+    if (/[^\x21-\x7e]/.test(key)) issues.push('contains spaces, line breaks or invalid characters');
     return res.status(500).json({ error: 'bad_key', message: `The Gemini key saved in Vercel looks wrong (${issues.join(', ')}). Copy it again using the copy icon in AI Studio.` });
   }
 
@@ -188,8 +189,12 @@ export default async function handler(req, res) {
   clearTimeout(timer);
   if (!response.ok) {
     const quota = response.status === 429;
+    // Google's own error (e.g. "API key not valid", model not found). It never includes the key.
+    const detail = `${response.status} ${data?.error?.status || ''}: ${String(data?.error?.message || '').slice(0, 200)}`;
+    console.error('Gemini returned an error:', detail);
     return res.status(quota ? 429 : 502).json({
       error: quota ? 'quota' : 'upstream_error',
+      detail,
       message: quota ? 'The free AI quota is used up for now. Try again later, or explore the pre-run example.' : 'The AI service returned an error. Try again in a moment.'
     });
   }
