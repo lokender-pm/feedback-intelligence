@@ -125,6 +125,13 @@ export default async function handler(req, res) {
 
   const key = (process.env.GEMINI_API_KEY || '').trim();
   if (!key) return res.status(503).json({ error: 'not_configured', message: 'Live AI is not set up on this deployment yet.' });
+  if (!/^AIza[0-9A-Za-z_-]{30,}$/.test(key)) {
+    // Describe what's wrong with the key without revealing any of it.
+    const issues = [`${key.length} characters`];
+    if (!key.startsWith('AIza')) issues.push('does not start with AIza');
+    if (/[^\x21-\x7e]/.test(key)) issues.push('contains spaces or invalid characters');
+    return res.status(500).json({ error: 'bad_key', message: `The Gemini key saved in Vercel looks wrong (${issues.join(', ')}). Copy it again using the copy icon in AI Studio.` });
+  }
 
   const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
   if (rateLimited(ip)) {
@@ -170,9 +177,11 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     clearTimeout(timer);
-    console.error('Gemini request failed:', err?.name, err?.message, err?.cause?.code || '');
+    // Log and return only the error type, never the message (it can echo the key).
+    const reason = err?.cause?.code || err?.cause?.name || err?.name || 'unknown';
+    console.error('Gemini request failed:', reason);
     if (err?.name === 'AbortError') return res.status(504).json({ error: 'timeout', message: 'The analysis took too long. Try again with fewer items.' });
-    return res.status(502).json({ error: 'upstream_unreachable', message: 'Could not reach the AI service. Try again in a moment.' });
+    return res.status(502).json({ error: 'upstream_unreachable', reason, message: 'Could not reach the AI service. Try again in a moment.' });
   }
 
   const data = await response.json().catch(() => ({}));
