@@ -85,7 +85,7 @@ Set these in Vercel under **Settings → Environment Variables**:
 | Variable | Default | Purpose |
 |---|---|---|
 | `GEMINI_API_KEY` | none | Required for live analysis |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Change if Google retires this model or you want another one |
+| `GEMINI_MODEL` | `gemini-3.8-flash` | Change if Google retires this model or you want another one |
 | `RUNS_PER_HOUR` | `5` | Live runs allowed per visitor per hour (best effort) |
 
 ## Limits and honest caveats
